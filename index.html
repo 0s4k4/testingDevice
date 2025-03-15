@@ -3,53 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flores que se mueven</title>
+    <title>Ramo de Flores con Movimiento Independiente</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #87CEEB; /* Fondo celeste */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #vase {
+            position: relative;
+            width: 100px;
+            height: 150px;
+            background-color: brown; /* Color del jarrón */
+            border-radius: 10px 10px 0 0;
+            bottom: -50px;
+        }
+        #bouquet {
+            position: absolute;
+            bottom: 50px; /* Posición del ramo sobre el jarrón */
+            left: 50%;
+            transform: translateX(-50%);
         }
         .flower {
-            position: absolute;
             font-size: 40px;
             user-select: none;
+            position: absolute;
+            transition: transform 0.2s ease-out; /* Suaviza el movimiento */
         }
     </style>
 </head>
 <body>
-    <div id="flowers-container"></div>
+    <div id="vase"></div> <!-- Jarrón -->
+    <div id="bouquet">
+        <!-- Flores en forma de ramo -->
+        <div class="flower" style="top: -100px; left: -20px;">🌸</div>
+        <div class="flower" style="top: -120px; left: 10px;">🌸</div>
+        <div class="flower" style="top: -80px; left: -30px;">🌸</div>
+        <div class="flower" style="top: -60px; left: 20px;">🌸</div>
+        <div class="flower" style="top: -140px; left: 0px;">🌸</div>
+    </div>
 
     <script>
         // Verificar si el navegador soporta el sensor de movimiento
         if (window.DeviceMotionEvent) {
-            // Crear flores
-            const flowersContainer = document.getElementById('flowers-container');
-            const numFlowers = 20; // Número de flores
-            const flowers = [];
-
-            for (let i = 0; i < numFlowers; i++) {
-                const flower = document.createElement('div');
-                flower.innerHTML = '🌸'; // Emoji de flor
-                flower.classList.add('flower');
-                flower.style.left = `${Math.random() * 100}vw`; // Posición horizontal aleatoria
-                flower.style.top = `${Math.random() * 100}vh`; // Posición vertical aleatoria
-                flowersContainer.appendChild(flower);
-                flowers.push(flower);
-            }
+            const flowers = document.querySelectorAll('.flower');
 
             // Escuchar el evento de movimiento
             window.addEventListener('devicemotion', (event) => {
                 const acceleration = event.accelerationIncludingGravity;
 
-                // Mover las flores en función de la aceleración
-                flowers.forEach((flower) => {
-                    const x = parseFloat(flower.style.left);
-                    const y = parseFloat(flower.style.top);
+                // Mover cada flor de manera independiente
+                flowers.forEach((flower, index) => {
+                    // Ajustar el movimiento en función de la aceleración
+                    const moveX = (acceleration.x || 0) * 5; // Sensibilidad en X
+                    const moveY = (acceleration.y || 0) * 5; // Sensibilidad en Y
 
-                    // Ajustar la posición de las flores
-                    flower.style.left = `${x + (acceleration.x || 0)}px`;
-                    flower.style.top = `${y + (acceleration.y || 0)}px`;
+                    // Aplicar el movimiento a cada flor
+                    flower.style.transform = `translate(${moveX}px, ${moveY}px)`;
                 });
             });
         } else {
