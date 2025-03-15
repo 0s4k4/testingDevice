@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor de Movimiento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #data {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sensor de Movimiento</h1>
+    <p>Mueve tu dispositivo para ver los valores de aceleración.</p>
+    <div id="data">
+        <p>X: <span id="x">0</span></p>
+        <p>Y: <span id="y">0</span></p>
+        <p>Z: <span id="z">0</span></p>
+    </div>
+
+    <script>
+        // Verificar si el navegador soporta el sensor de movimiento
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', function(event) {
+                // Obtener los valores de aceleración
+                var acceleration = event.accelerationIncludingGravity;
+
+                // Mostrar los valores en la pantalla
+                document.getElementById('x').innerHTML = acceleration.x.toFixed(2);
+                document.getElementById('y').innerHTML = acceleration.y.toFixed(2);
+                document.getElementById('z').innerHTML = acceleration.z.toFixed(2);
+            });
+        } else {
+            alert("Lo siento, tu dispositivo no soporta el sensor de movimiento.");
+        }
+    </script>
+</body>
+</html>
