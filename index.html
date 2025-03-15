@@ -3,39 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensor de Movimiento</title>
+    <title>Flores que se mueven</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB; /* Fondo celeste */
         }
-        #data {
-            font-size: 1.5em;
-            margin-top: 20px;
+        .flower {
+            position: absolute;
+            font-size: 40px;
+            user-select: none;
         }
     </style>
 </head>
 <body>
-    <h1>Sensor de Movimiento</h1>
-    <p>Mueve tu dispositivo para ver los valores de aceleración.</p>
-    <div id="data">
-        <p>X: <span id="x">0</span></p>
-        <p>Y: <span id="y">0</span></p>
-        <p>Z: <span id="z">0</span></p>
-    </div>
+    <div id="flowers-container"></div>
 
     <script>
         // Verificar si el navegador soporta el sensor de movimiento
         if (window.DeviceMotionEvent) {
-            window.addEventListener('devicemotion', function(event) {
-                // Obtener los valores de aceleración
-                var acceleration = event.accelerationIncludingGravity;
+            // Crear flores
+            const flowersContainer = document.getElementById('flowers-container');
+            const numFlowers = 20; // Número de flores
+            const flowers = [];
 
-                // Mostrar los valores en la pantalla
-                document.getElementById('x').innerHTML = acceleration.x.toFixed(2);
-                document.getElementById('y').innerHTML = acceleration.y.toFixed(2);
-                document.getElementById('z').innerHTML = acceleration.z.toFixed(2);
+            for (let i = 0; i < numFlowers; i++) {
+                const flower = document.createElement('div');
+                flower.innerHTML = '🌸'; // Emoji de flor
+                flower.classList.add('flower');
+                flower.style.left = `${Math.random() * 100}vw`; // Posición horizontal aleatoria
+                flower.style.top = `${Math.random() * 100}vh`; // Posición vertical aleatoria
+                flowersContainer.appendChild(flower);
+                flowers.push(flower);
+            }
+
+            // Escuchar el evento de movimiento
+            window.addEventListener('devicemotion', (event) => {
+                const acceleration = event.accelerationIncludingGravity;
+
+                // Mover las flores en función de la aceleración
+                flowers.forEach((flower) => {
+                    const x = parseFloat(flower.style.left);
+                    const y = parseFloat(flower.style.top);
+
+                    // Ajustar la posición de las flores
+                    flower.style.left = `${x + (acceleration.x || 0)}px`;
+                    flower.style.top = `${y + (acceleration.y || 0)}px`;
+                });
             });
         } else {
             alert("Lo siento, tu dispositivo no soporta el sensor de movimiento.");
